@@ -13,7 +13,7 @@ from initializer import InitFromFile
 
 def load_data():
 
-    data = np.loadtxt("data/data.txt")
+    data = np.loadtxt("data/new_data.txt")
     X = data[:, :-1]  # except last column
     y = data[:, -1]  # last column only
     return X, y
@@ -29,7 +29,7 @@ def test(X, y, initializer):
     rbflayer = RBFLayer(10,
                         initializer=initializer,
                         betas=2.0,
-                        input_shape=(1,))
+                        input_shape=(2,))
     outputlayer = Dense(1, use_bias=False)
 
     model.add(rbflayer)
@@ -47,15 +47,15 @@ def test(X, y, initializer):
     y_pred = model.predict(X)
 
     # show graph
-    plt.plot(X, y_pred)  # prediction
-    plt.plot(X, y)       # response from data
+    plt.scatter(y, y_pred)  # prediction
+    plt.plot(y, y)       # response from data
     plt.plot([-1, 1], [0, 0], color='black')  # zero line
     plt.xlim([-1, 1])
 
     # plot centers
-    centers = rbflayer.get_weights()[0]
-    widths = rbflayer.get_weights()[1]
-    plt.scatter(centers, np.zeros(len(centers)), s=20*widths)
+    # centers = rbflayer.get_weights()[0]
+    # widths = rbflayer.get_weights()[1]
+    # plt.scatter(centers, np.zeros(len(centers)), s=20*widths)
 
     plt.show()
 
@@ -64,7 +64,7 @@ def test(X, y, initializer):
     print(f"MSE: {MSE(y, y_pred):.4f}")
 
     # saving to and loading from file
-    filename = f"rbf_{type(initializer).__name__}.h5"
+    filename = "rbf_{}.h5".format(type(initializer).__name__)
     print(f"Save model to file {filename} ... ", end="")
     model.save(filename)
     print("OK")
@@ -127,11 +127,11 @@ if __name__ == "__main__":
     test(X, y, InitCentersRandom(X))
 
     # test simple RBF Network with centers set up by k-means
-    test(X, y, InitCentersKMeans(X))
+    # test(X, y, InitCentersKMeans(X))
 
     # test simple RBF Networks with centers loaded from previous
     # computation
-    test(X, y, InitFromFile("centers.npy"))
+    # test(X, y, InitFromFile("centers.npy"))
 
     # test InitFromFile initializer
-    test_init_from_file(X, y)
+    # test_init_from_file(X, y)
