@@ -46,16 +46,24 @@ def test(X, y, initializer):
 
     y_pred = model.predict(X)
 
+    # 创建一个新的三维图像
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
     # show graph
-    plt.scatter(y, y_pred)  # prediction
-    plt.plot(y, y)       # response from data
-    plt.plot([-1, 1], [0, 0], color='black')  # zero line
-    plt.xlim([-1, 1])
+    ax.scatter(X[:,0], X[:,1], y_pred, label='Predicted', c='b')
+    ax.scatter(X[:,0], X[:,1], y, label='Actual', c='r')
+    # plt.scatter(y, y_pred)  # prediction
+    # plt.plot(y, y)       # response from data
+    # plt.plot([-1, 1], [0, 0], color='black')  # zero line
+    # plt.xlim([-1, 1])
+    ax.set_xlim([0, 1])
+    # ax.set_ylim([-1, 1])
 
     # plot centers
-    # centers = rbflayer.get_weights()[0]
-    # widths = rbflayer.get_weights()[1]
-    # plt.scatter(centers, np.zeros(len(centers)), s=20*widths)
+    centers = rbflayer.get_weights()[0]
+    widths = rbflayer.get_weights()[1]
+    ax.scatter(centers[:,0], centers[:,1], np.zeros(len(centers)), s=20*widths, label = 'RBF Centers')
 
     plt.show()
 
