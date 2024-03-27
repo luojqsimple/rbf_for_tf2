@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from rbflayer import RBFLayer, InitCentersRandom
 from kmeans_initializer import InitCentersKMeans
 from initializer import InitFromFile
+from GenerateData import generate_data
 
 
 def load_data():
@@ -19,17 +20,17 @@ def load_data():
     return X, y
 
 
-def test(X, y, initializer):
+def test(X, y, initializer, ndim=3):
 
     title = f" test {type(initializer).__name__} "
     print("-"*20 + title + "-"*20)
 
     # create RBF network as keras sequential model
     model = Sequential()
-    rbflayer = RBFLayer(10,
+    rbflayer = RBFLayer(50,
                         initializer=initializer,
                         betas=2.0,
-                        input_shape=(2,))
+                        input_shape=(ndim,))
     outputlayer = Dense(1, use_bias=False)
 
     model.add(rbflayer)
@@ -40,30 +41,31 @@ def test(X, y, initializer):
 
     # fit and predict
     model.fit(X, y,
-              batch_size=50,
+              batch_size=30,
               epochs=2000,
-              verbose=0)
+              verbose=1)
 
     y_pred = model.predict(X)
 
     # 创建一个新的三维图像
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
 
     # show graph
-    ax.scatter(X[:,0], X[:,1], y_pred, label='Predicted', c='b')
-    ax.scatter(X[:,0], X[:,1], y, label='Actual', c='r')
-    # plt.scatter(y, y_pred)  # prediction
-    # plt.plot(y, y)       # response from data
+    # ax.scatter(X[:, 0], X[:, 1], y_pred, label='Predicted', c='b')
+    # ax.scatter(X[:, 0], X[:, 1], y, label='Actual', c='r')
+    plt.scatter(y, y_pred)  # prediction
+    plt.plot(y, y)       # response from data
     # plt.plot([-1, 1], [0, 0], color='black')  # zero line
     # plt.xlim([-1, 1])
-    ax.set_xlim([0, 1])
+    # ax.set_xlim([0, 1])
     # ax.set_ylim([-1, 1])
 
     # plot centers
     centers = rbflayer.get_weights()[0]
     widths = rbflayer.get_weights()[1]
-    ax.scatter(centers[:,0], centers[:,1], np.zeros(len(centers)), s=20*widths, label = 'RBF Centers')
+    # ax.scatter(centers[:, 0], centers[:, 1], np.zeros(len(centers)),
+    #            s=20*widths, label='RBF Centers')
 
     plt.show()
 
@@ -98,7 +100,7 @@ def test_init_from_file(X, y):
     print("-"*20 + " test init from file " + "-"*20)
 
     # load the last model from file
-    filename = f"rbf_InitFromFile.h5"
+    filename = "rbf_InitCentersRandom.h5"
     print(f"Load model from file {filename} ... ", end="")
     model = load_model(filename,
                        custom_objects={'RBFLayer': RBFLayer})
@@ -108,10 +110,10 @@ def test_init_from_file(X, y):
     print(f"MSE: {MSE(y, res):.4f}")
 
     # load the weights of the same model separately
-    rbflayer = RBFLayer(10,
+    rbflayer = RBFLayer(50,
                         initializer=InitFromFile("centers.npy"),
                         betas=InitFromFile("widths.npy"),
-                        input_shape=(1,))
+                        input_shape=(3,))
     print("rbf layer created")
     outputlayer = Dense(1,
                         kernel_initializer=InitFromFile("weights.npy"),
@@ -126,20 +128,29 @@ def test_init_from_file(X, y):
     print(f"MSE: {MSE(y, res2):.4f}")
     print("Same responses: ", all(res == res2))
 
+    plt.scatter(y, res2)  # prediction
+    plt.plot(y, y)       # response from data
+    plt.show()
+
 
 if __name__ == "__main__":
 
-    X, y = load_data()
+    # X, y = load_data()
+    X_train, X_val, y_train, y_val = generate_data()
+    print("训练集特征数据形状:", X_train.shape, X_train[:10, :])
+    print("训练集标签数据形状:", y_train.shape, y_train[:10])
+    print("验证集特征数据形状:", X_val.shape, X_val[:10, :])
+    print("验证集标签数据形状:", y_val.shape, y_val[:10])
 
     # test simple RBF Network with random  setup of centers
-    test(X, y, InitCentersRandom(X))
+    # test(X_train, y_train, InitCentersRandom(X_train), ndim=3)
 
     # test simple RBF Network with centers set up by k-means
-    # test(X, y, InitCentersKMeans(X))
+    test(X_train, y_train, InitCentersKMeans(X_train), ndim=3)
 
     # test simple RBF Networks with centers loaded from previous
     # computation
-    # test(X, y, InitFromFile("centers.npy"))
+    # test(X_train, y_train, InitFromFile("centers.npy"))
 
     # test InitFromFile initializer
-    # test_init_from_file(X, y)
+    # test_init_from_file(X_train, y_train)
