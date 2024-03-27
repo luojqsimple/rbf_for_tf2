@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
-from mayavi import mlab
+# import matplotlib.pyplot as plt
+# from mayavi import mlab
 
 
 def generate_data():
@@ -32,12 +32,12 @@ def generate_data():
     return train_test_split(X, y, test_size=0.2, random_state=1)
 
 
-# 打印训练集和验证集的形状
-X_train, X_val, y_train, y_val = generate_data()
-print("训练集特征数据形状:", X_train.shape, X_train[:10, :])
-print("训练集标签数据形状:", y_train.shape, y_train[:10])
-print("验证集特征数据形状:", X_val.shape, X_val[:10, :])
-print("验证集标签数据形状:", y_val.shape, y_val[:10])
+# # 打印训练集和验证集的形状
+# X_train, X_val, y_train, y_val = generate_data()
+# print("训练集特征数据形状:", X_train.shape, X_train[:10, :])
+# print("训练集标签数据形状:", y_train.shape, y_train[:10])
+# print("验证集特征数据形状:", X_val.shape, X_val[:10, :])
+# print("验证集标签数据形状:", y_val.shape, y_val[:10])
 
 # train_data = np.column_stack((X_train, y_train))
 # test_data = np.column_stack((X_val, y_val))
@@ -61,18 +61,18 @@ print("验证集标签数据形状:", y_val.shape, y_val[:10])
 # # 显示图像
 # plt.show()
 
-# 创建Mayavi场景
-mlab.figure(bgcolor=(1, 1, 1), size=(800, 600))
+# # 创建Mayavi场景
+# mlab.figure(bgcolor=(1, 1, 1), size=(800, 600))
 
-# 绘制点云
-radii = np.random.rand(X_train.shape[0]) * 0.5  # 生成随机半径，范围在0到0.5之间
-mlab.points3d(X_train[:, 0], X_train[:, 1], X_train[:, 2], radii,
-              mode='point')
+# # 绘制点云
+# radii = np.random.rand(X_train.shape[0]) * 0.5  # 生成随机半径，范围在0到0.5之间
+# mlab.points3d(X_train[:, 0], X_train[:, 1], X_train[:, 2], radii,
+#               mode='point')
 
-# 设置坐标轴标签
-mlab.xlabel('X')
-mlab.ylabel('Y')
-mlab.zlabel('Z')
+# # 设置坐标轴标签
+# mlab.xlabel('X')
+# mlab.ylabel('Y')
+# mlab.zlabel('Z')
 
-# 显示图形
-mlab.show()
+# # 显示图形
+# mlab.show()

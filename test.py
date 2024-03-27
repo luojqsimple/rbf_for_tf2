@@ -5,6 +5,7 @@ from tensorflow.keras.optimizers import RMSprop
 from tensorflow.keras.losses import MSE
 
 import matplotlib.pyplot as plt
+# from sklearn.preprocessing import StandardScaler
 
 from rbflayer import RBFLayer, InitCentersRandom
 from kmeans_initializer import InitCentersKMeans
@@ -25,11 +26,15 @@ def test(X, y, initializer, ndim=3):
     title = f" test {type(initializer).__name__} "
     print("-"*20 + title + "-"*20)
 
+    # # 数据归一化处理
+    # scaler = StandardScaler()
+    # X = scaler.fit_transform(X)
+
     # create RBF network as keras sequential model
     model = Sequential()
-    rbflayer = RBFLayer(50,
+    rbflayer = RBFLayer(80,
                         initializer=initializer,
-                        betas=2.0,
+                        betas=5.0,
                         input_shape=(ndim,))
     outputlayer = Dense(1, use_bias=False)
 
